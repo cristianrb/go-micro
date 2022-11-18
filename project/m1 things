@@ -1,0 +1,40 @@
+https://www.udemy.com/course/working-with-microservices-in-go/learn/lecture/31694410#questions/17912564
+
+TD
+M1 machine tips topic
+3 votos
+Tcharles Pereira · Clase 99 · hace 3 meses
+If you’re using a M1 machine to develop and you want to deploy your application to Linode/DigitalOcean/etc, take care to build and define the GOOS and GOARCH.
+
+> go env GOOS GOARCH
+darwin
+arm64
+Just building defining the GOOS, your target will be “default” to arch=arm64
+Linode and other VPS’s normally run at x86_64, so it don’t will work.
+
+node-1:/swarm$ uname -a
+Linux node-1 5.4.0-122-generic #138-Ubuntu SMP Wed Jun 22 15:00:31 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+Before build your image, take care to have something like:
+
+env GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -o BinaryName .
+2 respuestas
+
+Trevor — Instructor
+1 voto
+hace 3 meses
+Thanks for that. It's helpful. I just picked up my first Apple silicon machine a week ago.
+
+
+Andrew
+2 votos
+hace 22 días
+An additional note for using Mac M1 machine to deploy to remote server:
+
+
+Apart from setting the golang build architecture to GOARCH=amd64, we also need to set the docker build architecture to linux/amd64. So instead of running:
+docker build -f broker-service.dockerfile -t tcs/broker-service:1.0.0 .
+
+We need to run:
+docker build -f broker-service.dockerfile --platform linux/amd64 -t tcs/broker-service:1.0.0 .
+
+Hope this help those who are running on M1 machines.
